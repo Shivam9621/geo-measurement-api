@@ -1,6 +1,6 @@
 from functools import lru_cache
+
 import pyproj
-import shapely
 from shapely.geometry.base import BaseGeometry
 from shapely.ops import transform
 
@@ -50,9 +50,15 @@ def select_measurement_crs(geom_4326: BaseGeometry) -> tuple[str, str | None]:
 
     # Polar cases: north of 84°N or south of 80°S
     if lat > 84.0:
-        return "EPSG:3413", "Polar region (>84°N): using WGS 84 / NSIDC Sea Ice Polar Stereographic North (EPSG:3413)."
+        return (
+            "EPSG:3413",
+            "Polar region (>84°N): using WGS 84 / NSIDC Sea Ice Polar Stereographic North (EPSG:3413).",
+        )
     elif lat < -80.0:
-        return "EPSG:3031", "Polar region (<-80°S): using Antarctic Polar Stereographic (EPSG:3031)."
+        return (
+            "EPSG:3031",
+            "Polar region (<-80°S): using Antarctic Polar Stereographic (EPSG:3031).",
+        )
 
     # Standard UTM Zone calculation
     # Zone 1 to 60, each 6 degrees wide

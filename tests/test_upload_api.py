@@ -1,9 +1,10 @@
 import io
-from pathlib import Path
 import zipfile
-from fastapi.testclient import TestClient
+from pathlib import Path
+
 import pyproj
 import shapefile
+from fastapi.testclient import TestClient
 from shapely.geometry import Polygon
 
 
@@ -39,7 +40,9 @@ def test_upload_valid_kml(client: TestClient) -> None:
   </Document>
 </kml>"""
 
-    files = {"file": ("survey.kml", kml_content.encode("utf-8"), "application/vnd.google-earth.kml+xml")}
+    files = {
+        "file": ("survey.kml", kml_content.encode("utf-8"), "application/vnd.google-earth.kml+xml")
+    }
     response = client.post("/api/files/", files=files)
     assert response.status_code == 201
     data = response.json()
@@ -106,7 +109,9 @@ def test_upload_mix_including_geometry_collection(client: TestClient) -> None:
   </Document>
 </kml>"""
 
-    files = {"file": ("mixed.kml", kml_content.encode("utf-8"), "application/vnd.google-earth.kml+xml")}
+    files = {
+        "file": ("mixed.kml", kml_content.encode("utf-8"), "application/vnd.google-earth.kml+xml")
+    }
     response = client.post("/api/files/", files=files)
     assert response.status_code == 201
     file_id = response.json()["id"]
@@ -122,7 +127,9 @@ def test_upload_mix_including_geometry_collection(client: TestClient) -> None:
 def test_upload_empty_features_returns_422_and_persists_failed(client: TestClient) -> None:
     """Empty geospatial file returns 422 NO_FEATURES and persists status=FAILED in DB."""
     empty_kml = """<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document></Document></kml>"""
-    files = {"file": ("empty.kml", empty_kml.encode("utf-8"), "application/vnd.google-earth.kml+xml")}
+    files = {
+        "file": ("empty.kml", empty_kml.encode("utf-8"), "application/vnd.google-earth.kml+xml")
+    }
     response = client.post("/api/files/", files=files)
     assert response.status_code == 422
     data = response.json()

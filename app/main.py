@@ -46,7 +46,9 @@ def create_app() -> FastAPI:
         return JSONResponse(status_code=exc.status_code, content={"error": error_payload})
 
     @app.exception_handler(RequestValidationError)
-    async def validation_error_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+    async def validation_error_handler(
+        request: Request, exc: RequestValidationError
+    ) -> JSONResponse:
         # Standardized error structure for validation failures
         message = "; ".join(f"{err['loc'][-1]}: {err['msg']}" for err in exc.errors())
         return JSONResponse(
@@ -56,10 +58,14 @@ def create_app() -> FastAPI:
 
     @app.exception_handler(Exception)
     async def general_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-        logger.error(f"Unhandled server error on {request.method} {request.url.path}: {exc}", exc_info=True)
+        logger.error(
+            f"Unhandled server error on {request.method} {request.url.path}: {exc}", exc_info=True
+        )
         return JSONResponse(
             status_code=500,
-            content={"error": {"code": "INTERNAL_ERROR", "message": "An internal server error occurred."}},
+            content={
+                "error": {"code": "INTERNAL_ERROR", "message": "An internal server error occurred."}
+            },
         )
 
     # Register health endpoint

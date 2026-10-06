@@ -1,6 +1,7 @@
-from pathlib import Path
 import shutil
 import zipfile
+from pathlib import Path
+
 from fastapi import UploadFile
 
 from app.config import settings
@@ -125,7 +126,8 @@ def extract_and_locate_shapefile(zip_path: Path, extract_dir: Path) -> Path:
 
     # Find the primary .shp file
     shp_files = [
-        f for f in extract_dir.rglob("*.shp")
+        f
+        for f in extract_dir.rglob("*.shp")
         if not is_ignored_path(str(f.relative_to(extract_dir)))
     ]
 

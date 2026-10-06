@@ -33,7 +33,13 @@ def test_get_measurements_and_filtering(client: TestClient) -> None:
   </Document>
 </kml>"""
 
-    files = {"file": ("measure_test.kml", kml_content.encode("utf-8"), "application/vnd.google-earth.kml+xml")}
+    files = {
+        "file": (
+            "measure_test.kml",
+            kml_content.encode("utf-8"),
+            "application/vnd.google-earth.kml+xml",
+        )
+    }
     upload_resp = client.post("/api/files/", files=files)
     assert upload_resp.status_code == 201
     file_id = upload_resp.json()["id"]
@@ -105,7 +111,9 @@ def test_measurements_unknown_file_returns_404(client: TestClient) -> None:
 def test_measurements_failed_file_returns_409(client: TestClient) -> None:
     """GET /api/files/{id}/measurements/ on a failed upload returns 409 FILE_PROCESSING_FAILED."""
     empty_kml = """<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document></Document></kml>"""
-    files = {"file": ("empty.kml", empty_kml.encode("utf-8"), "application/vnd.google-earth.kml+xml")}
+    files = {
+        "file": ("empty.kml", empty_kml.encode("utf-8"), "application/vnd.google-earth.kml+xml")
+    }
     upload_resp = client.post("/api/files/", files=files)
     assert upload_resp.status_code == 422
     failed_id = upload_resp.json()["error"]["id"]

@@ -1,5 +1,6 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
+
 from sqlalchemy import JSON, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -8,7 +9,7 @@ from app.database import Base
 
 def utc_now() -> datetime:
     """Return current UTC datetime with timezone awareness."""
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class UploadedFile(Base):
@@ -19,7 +20,9 @@ class UploadedFile(Base):
     id: Mapped[str] = mapped_column(String(32), primary_key=True)
     filename: Mapped[str] = mapped_column(String(255), nullable=False)
     file_type: Mapped[str] = mapped_column(String(20), nullable=False)  # shapefile or kml
-    status: Mapped[str] = mapped_column(String(20), nullable=False, default="PROCESSING")  # PROCESSING, COMPLETED, FAILED
+    status: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="PROCESSING"
+    )  # PROCESSING, COMPLETED, FAILED
     crs: Mapped[str | None] = mapped_column(String(100), nullable=True)
     feature_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -53,7 +56,9 @@ class Feature(Base):
     crs: Mapped[str] = mapped_column(String(100), nullable=False)
     properties: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict, nullable=False)
 
-    measurement_type: Mapped[str | None] = mapped_column(String(20), nullable=True)  # area, length, or None
+    measurement_type: Mapped[str | None] = mapped_column(
+        String(20), nullable=True
+    )  # area, length, or None
     area_m2: Mapped[float | None] = mapped_column(Float, nullable=True)
     length_m: Mapped[float | None] = mapped_column(Float, nullable=True)
     geodesic_area_m2: Mapped[float | None] = mapped_column(Float, nullable=True)

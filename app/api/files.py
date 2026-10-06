@@ -1,5 +1,6 @@
-from collections import defaultdict
 import uuid
+from collections import defaultdict
+
 from fastapi import APIRouter, Depends, File, Query, Response, UploadFile
 from fastapi.responses import JSONResponse
 from sqlalchemy import func, select
@@ -96,7 +97,9 @@ def list_files(
 ) -> FileListResponse:
     """Retrieve a paginated list of all uploaded files."""
     total = db.scalar(select(func.count(UploadedFile.id))) or 0
-    query = select(UploadedFile).order_by(UploadedFile.created_at.desc()).offset(offset).limit(limit)
+    query = (
+        select(UploadedFile).order_by(UploadedFile.created_at.desc()).offset(offset).limit(limit)
+    )
     records = db.scalars(query).all()
 
     return FileListResponse(
@@ -159,7 +162,11 @@ def get_file_measurements(
             }
 
         val = f.area_m2 if f.measurement_type == "area" else f.length_m
-        unit = "m2" if f.measurement_type == "area" else ("m" if f.measurement_type == "length" else None)
+        unit = (
+            "m2"
+            if f.measurement_type == "area"
+            else ("m" if f.measurement_type == "length" else None)
+        )
         geodesic_val = f.geodesic_area_m2 if f.measurement_type == "area" else f.geodesic_length_m
 
         measurement = MeasurementValue(

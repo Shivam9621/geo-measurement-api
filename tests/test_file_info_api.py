@@ -13,7 +13,9 @@ def test_get_file_info_and_list(client: TestClient) -> None:
   </Document>
 </kml>"""
 
-    files = {"file": ("test.kml", kml_content.encode("utf-8"), "application/vnd.google-earth.kml+xml")}
+    files = {
+        "file": ("test.kml", kml_content.encode("utf-8"), "application/vnd.google-earth.kml+xml")
+    }
     upload_resp = client.post("/api/files/", files=files)
     assert upload_resp.status_code == 201
     file_id = upload_resp.json()["id"]
@@ -65,7 +67,9 @@ def test_file_summary_and_deletion(client: TestClient) -> None:
   </Document>
 </kml>"""
 
-    files = {"file": ("summary.kml", kml_content.encode("utf-8"), "application/vnd.google-earth.kml+xml")}
+    files = {
+        "file": ("summary.kml", kml_content.encode("utf-8"), "application/vnd.google-earth.kml+xml")
+    }
     upload_resp = client.post("/api/files/", files=files)
     file_id = upload_resp.json()["id"]
 

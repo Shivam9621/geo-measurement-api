@@ -1,8 +1,9 @@
-from datetime import datetime, timezone
 import logging
+from datetime import UTC, datetime
 from pathlib import Path
-from sqlalchemy.orm import Session
+
 import shapely.geometry
+from sqlalchemy.orm import Session
 
 from app.core.errors import AppError
 from app.models import Feature, UploadedFile
@@ -85,7 +86,7 @@ def process_file(
         upload_record.feature_count = len(feature_db_records)
         upload_record.crs = crs_str
         upload_record.status = "COMPLETED"
-        upload_record.completed_at = datetime.now(timezone.utc)
+        upload_record.completed_at = datetime.now(UTC)
         db.commit()
         db.refresh(upload_record)
 
@@ -97,7 +98,7 @@ def process_file(
     except Exception as e:
         db.rollback()
         upload_record.status = "FAILED"
-        upload_record.completed_at = datetime.now(timezone.utc)
+        upload_record.completed_at = datetime.now(UTC)
         if isinstance(e, AppError):
             upload_record.error_code = e.code
             upload_record.error_message = e.message

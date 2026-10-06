@@ -1,4 +1,3 @@
-import pytest
 from shapely.geometry import (
     GeometryCollection,
     LineString,
@@ -16,7 +15,9 @@ def test_square_1000m_measurement() -> None:
     """A 1000m x 1000m square built in UTM and converted to 4326 measures ~1,000,000 m² within 0.1%."""
     # Build 1000m x 1000m square in UTM 43N (EPSG:32643)
     x0, y0 = 780000.0, 1435000.0
-    utm_poly = Polygon([(x0, y0), (x0 + 1000, y0), (x0 + 1000, y0 + 1000), (x0, y0 + 1000), (x0, y0)])
+    utm_poly = Polygon(
+        [(x0, y0), (x0 + 1000, y0), (x0 + 1000, y0 + 1000), (x0, y0 + 1000), (x0, y0)]
+    )
     assert utm_poly.area == 1_000_000.0
 
     # Transform to EPSG:4326
@@ -72,7 +73,13 @@ def test_polygon_with_hole_excludes_hole() -> None:
     x0, y0 = 780000.0, 1435000.0
     exterior = [(x0, y0), (x0 + 100, y0), (x0 + 100, y0 + 100), (x0, y0 + 100), (x0, y0)]
     # Hole: 20m x 20m in center
-    hole = [(x0 + 40, y0 + 40), (x0 + 60, y0 + 40), (x0 + 60, y0 + 60), (x0 + 40, y0 + 60), (x0 + 40, y0 + 40)]
+    hole = [
+        (x0 + 40, y0 + 40),
+        (x0 + 60, y0 + 40),
+        (x0 + 60, y0 + 60),
+        (x0 + 40, y0 + 60),
+        (x0 + 40, y0 + 40),
+    ]
     utm_poly = Polygon(exterior, [hole])
     expected_area = 10000.0 - 400.0  # 9600 m²
 
@@ -149,7 +156,9 @@ def test_invalid_bowtie_polygon_repaired() -> None:
 def test_naive_degree_regression_guard() -> None:
     """Regression guard proving raw degrees squared are NEVER returned as area."""
     # 0.01° x 0.01° polygon around Bengaluru
-    poly_deg = Polygon([(77.59, 12.97), (77.60, 12.97), (77.60, 12.98), (77.59, 12.98), (77.59, 12.97)])
+    poly_deg = Polygon(
+        [(77.59, 12.97), (77.60, 12.97), (77.60, 12.98), (77.59, 12.98), (77.59, 12.97)]
+    )
     naive_deg_area = poly_deg.area  # ~ 0.0001 square degrees
 
     res = measure_feature(poly_deg, "EPSG:4326")

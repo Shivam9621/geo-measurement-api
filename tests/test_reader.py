@@ -1,9 +1,9 @@
 from datetime import date, datetime
-import math
 from pathlib import Path
+
 import pyproj
 import shapefile
-from shapely.geometry import LineString, Point, Polygon
+from shapely.geometry import Polygon
 
 from app.services.reader import make_json_safe, read_geospatial_file
 

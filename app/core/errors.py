@@ -1,7 +1,9 @@
 class AppError(Exception):
     """Base application exception with standardized API error shape."""
 
-    def __init__(self, code: str, message: str, status_code: int = 400, details: dict | None = None):
+    def __init__(
+        self, code: str, message: str, status_code: int = 400, details: dict | None = None
+    ):
         super().__init__(message)
         self.code = code
         self.message = message
@@ -29,12 +31,16 @@ class FileTooLargeError(AppError):
 
 
 class InvalidArchiveError(AppError):
-    def __init__(self, message: str = "Zip archive is invalid, corrupted, or violates security policies."):
+    def __init__(
+        self, message: str = "Zip archive is invalid, corrupted, or violates security policies."
+    ):
         super().__init__(code="INVALID_ARCHIVE", message=message, status_code=422)
 
 
 class MissingShapefileComponentError(AppError):
-    def __init__(self, message: str = "Shapefile is missing required components (.shp, .shx, or .dbf)."):
+    def __init__(
+        self, message: str = "Shapefile is missing required components (.shp, .shx, or .dbf)."
+    ):
         super().__init__(code="MISSING_SHAPEFILE_COMPONENT", message=message, status_code=422)
 
 
@@ -55,7 +61,9 @@ class NoFeaturesError(AppError):
 
 class FileNotFoundError(AppError):
     def __init__(self, file_id: str):
-        super().__init__(code="FILE_NOT_FOUND", message=f"File with id '{file_id}' not found.", status_code=404)
+        super().__init__(
+            code="FILE_NOT_FOUND", message=f"File with id '{file_id}' not found.", status_code=404
+        )
 
 
 class FileProcessingFailedError(AppError):

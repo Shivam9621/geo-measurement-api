@@ -1,5 +1,6 @@
 from collections.abc import Generator
 from pathlib import Path
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -22,7 +23,9 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_
 
 
 @pytest.fixture(autouse=True)
-def setup_test_environment(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Generator[None, None, None]:
+def setup_test_environment(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> Generator[None, None, None]:
     """Isolate database tables and uploads directory for every test run."""
     # Override upload directory to temporary pytest directory
     upload_dir = tmp_path / "uploads"
@@ -49,6 +52,7 @@ def db_session() -> Generator[Session, None, None]:
 @pytest.fixture
 def client(db_session: Session) -> Generator[TestClient, None, None]:
     """TestClient fixture with overridden DB dependency."""
+
     def override_get_db() -> Generator[Session, None, None]:
         try:
             yield db_session

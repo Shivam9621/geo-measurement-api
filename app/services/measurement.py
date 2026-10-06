@@ -1,15 +1,7 @@
 from dataclasses import dataclass
+
 import pyproj
 import shapely
-from shapely.geometry import (
-    GeometryCollection,
-    LineString,
-    MultiLineString,
-    MultiPoint,
-    MultiPolygon,
-    Point,
-    Polygon,
-)
 from shapely.geometry.base import BaseGeometry
 
 from app.services.crs import (
@@ -42,7 +34,9 @@ def compute_geodesic_measurement(geom_4326: BaseGeometry, geom_type: str) -> flo
             area, _ = geod_wgs84.geometry_area_perimeter(geom_4326)
             return abs(float(area))
         elif geom_type == "MultiPolygon":
-            total_area = sum(abs(float(geod_wgs84.geometry_area_perimeter(poly)[0])) for poly in geom_4326.geoms)
+            total_area = sum(
+                abs(float(geod_wgs84.geometry_area_perimeter(poly)[0])) for poly in geom_4326.geoms
+            )
             return total_area
         elif geom_type in ("LineString", "LinearRing"):
             return float(geod_wgs84.geometry_length(geom_4326))

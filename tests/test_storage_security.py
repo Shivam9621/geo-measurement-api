@@ -1,7 +1,9 @@
 import io
 import zipfile
+
 import pytest
 from fastapi.testclient import TestClient
+
 from app.config import settings
 
 
@@ -16,7 +18,13 @@ def test_upload_missing_file(client: TestClient) -> None:
 
 def test_upload_unsupported_extension(client: TestClient) -> None:
     """POST /api/files/ with unsupported file extension returns 400 UNSUPPORTED_FILE_TYPE."""
-    files = {"file": ("data.geojson", b'{"type": "FeatureCollection", "features": []}', "application/json")}
+    files = {
+        "file": (
+            "data.geojson",
+            b'{"type": "FeatureCollection", "features": []}',
+            "application/json",
+        )
+    }
     response = client.post("/api/files/", files=files)
     assert response.status_code == 400
     data = response.json()
@@ -60,7 +68,9 @@ def test_upload_zip_slip_rejected(client: TestClient) -> None:
     assert "Zip slip" in data["error"]["message"]
 
 
-def test_upload_zip_bomb_file_count_limit(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_upload_zip_bomb_file_count_limit(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Zip containing more files than MAX_ZIP_FILES returns 422 INVALID_ARCHIVE."""
     monkeypatch.setattr(settings, "MAX_ZIP_FILES", 5)
 
@@ -97,7 +107,10 @@ def test_upload_zip_missing_shx_or_dbf(client: TestClient) -> None:
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, "w") as zf:
         zf.writestr("layer.shp", b"dummy shp")
-        zf.writestr("layer.prj", "GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]")
+        zf.writestr(
+            "layer.prj",
+            'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]',
+        )
     zip_buffer.seek(0)
 
     files = {"file": ("missing_shx.zip", zip_buffer.getvalue(), "application/zip")}

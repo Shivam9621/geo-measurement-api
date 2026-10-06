@@ -1,4 +1,3 @@
-import shapely
 from shapely.geometry import Point
 
 from app.services.crs import select_measurement_crs

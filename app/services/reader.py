@@ -1,10 +1,9 @@
-from dataclasses import dataclass
 import datetime
 import math
-from pathlib import Path
-import re
-from typing import Any
 import xml.etree.ElementTree as ET
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
 
 import pyproj
 import shapefile
@@ -70,10 +69,14 @@ def read_shapefile_crs(shp_path: Path) -> tuple[pyproj.CRS, str]:
     """Read and parse CRS from companion .prj file."""
     parent = shp_path.parent
     stem = shp_path.stem
-    prj_files = [f for f in parent.iterdir() if f.is_file() and f.name.lower() == f"{stem}.prj".lower()]
+    prj_files = [
+        f for f in parent.iterdir() if f.is_file() and f.name.lower() == f"{stem}.prj".lower()
+    ]
 
     if not prj_files:
-        raise MissingCrsError(f"Shapefile '{shp_path.name}' is missing companion .prj projection file.")
+        raise MissingCrsError(
+            f"Shapefile '{shp_path.name}' is missing companion .prj projection file."
+        )
 
     prj_text = prj_files[0].read_text(encoding="utf-8", errors="replace").strip()
     if not prj_text:
