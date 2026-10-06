@@ -1,0 +1,13 @@
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+pydantic>=2.6.0
+pydantic-settings>=2.2.0
+sqlalchemy>=2.0.28
+shapely>=2.0.3
+pyproj>=3.6.1
+geopandas>=0.14.0
+pyogrio>=0.7.0
+pyshp>=3.1.6
+fastkml>=1.4.0
+lxml>=5.1.0
+python-multipart>=0.0.9
